@@ -37,8 +37,9 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 200rpx 0;
+  /* padding: 200rpx 0; */
   box-sizing: border-box;
+  font-size:30rpx;
 }
 /* this rule will be remove */
 * {

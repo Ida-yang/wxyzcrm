@@ -1,8 +1,15 @@
 <template>
-  <div @click="clickHandle">
+  <div @click="clickHandle" class="container">
+    <div class="showinfo">
+      <ul>
+        <li>今日新增线索：100</li>
+        <li>今日新增客户：100</li>
+        <li>今日联系：100</li>
+        <li>目标：100</li>
+      </ul>
+    </div>
 
     <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
       <img class="userinfo-avatar" src="/static/images/user.png" background-size="cover" />
 
       <div class="userinfo-nickname">
@@ -26,8 +33,13 @@
 
     <div class="all">
         <div class="left">
+          1
+        </div>
+        <div class="middle">
+          2
         </div>
         <div class="right">
+          3
         </div>
     </div>
   </div>
@@ -42,7 +54,6 @@ export default {
       motto: 'Hello miniprograme',
       userInfo: {
         nickName: 'mpvue',
-        avatarUrl: 'http://mpvue.com/assets/logo.png'
       }
     }
   },
@@ -73,6 +84,19 @@ export default {
 </script>
 
 <style scoped>
+.showinfo ul{
+  display: flex;
+  flex-wrap: wrap;
+}
+.showinfo ul li{
+  flex: 33% 1 0;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  margin: 0 5rpx 5rpx 0;
+  background-color: #ccc;
+}
+
 .userinfo {
   display: flex;
   flex-direction: column;
@@ -91,7 +115,7 @@ export default {
 }
 
 .usermotto {
-  margin-top: 150px;
+  margin-top: 50px;
 }
 
 .form-control {
@@ -99,6 +123,10 @@ export default {
   padding: 0 12px;
   margin-bottom: 5px;
   border: 1px solid #ccc;
+}
+.counter{
+  height: 60rpx;
+  padding: 20rpx;
 }
 .all{
   width:7.5rem;
@@ -112,14 +140,19 @@ export default {
 }
 .left{
   float:left;
-  width:3rem;
+  width:2.5rem;
   height:1rem;
-  background-color:red;
+  background-color:yellow;
 }
-
+.middle{
+  float: left;
+  width: 2.5rem;
+  height: 1rem;
+  background-color: red;
+}
 .right{
   float:left;
-  width:4.5rem;
+  width:2.5rem;
   height:1rem;
   background-color:green;
 }
