@@ -1,6 +1,20 @@
+
 <script>
+import config from './config'
 export default {
   created () {
+    // wx.request({
+    //   url: config.host + 'customerOne/query.do',  //接口地址
+    //   data: {
+    //     limit: 2
+    //   },
+    //   header: {
+    //     'content-type': 'application/json'  //默认值
+    //   },
+    //   success: function (res) {
+    //     console.log(res)
+    //   }
+    // })
     // 调用API从本地缓存中获取数据
     /*
      * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
@@ -39,7 +53,7 @@ export default {
   justify-content: space-between;
   /* padding: 200rpx 0; */
   box-sizing: border-box;
-  font-size:30rpx;
+  font-size:24rpx;
 }
 /* this rule will be remove */
 * {
