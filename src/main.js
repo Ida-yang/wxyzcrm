@@ -7,3 +7,11 @@ App.mpType = 'app'
 
 const app = new Vue(App)
 app.$mount()
+
+export default {
+    config: {
+        usingComponents: {
+            'ec-canvas': '../../../static/ec-canvas/ec-canvas'
+        }
+    }
+}

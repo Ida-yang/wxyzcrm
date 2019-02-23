@@ -53,7 +53,7 @@ export default {
   justify-content: space-between;
   /* padding: 200rpx 0; */
   box-sizing: border-box;
-  font-size:24rpx;
+  font-size: 28rpx;
 }
 /* this rule will be remove */
 * {

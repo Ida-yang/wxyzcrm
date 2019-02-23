@@ -32,7 +32,7 @@ Component({
         this.init();
       }
         
-    }, 10);
+    }, 1000);
   },
 
   methods: {
@@ -61,15 +61,18 @@ Component({
         if (typeof callback === 'function') {
           this.chart = callback(canvas, res.width, res.height);
         }
-        else if (this.data.ec && typeof this.data.ec.onInit === 'function') {
+
+        else if (this.data.ec && this.data.ec.onInit) {
           this.chart = this.data.ec.onInit(canvas, res.width, res.height);
         }
+
         else if(this.data.ec && this.data.ec.options) {
-          //为init添加接收options传参
+
+          //添加接收options传参
           const ec = this.data.ec
 
           function initChart(canvas, width, height) {
-            const chart = echarts.init(canvas, null,{
+            const chart = echarts.init(canvas, null, {
               width: width,
               height: height
             });
@@ -77,7 +80,7 @@ Component({
             chart.setOption(ec.options);
             return chart;
           }
-          this.chart = initChart(canvas,res.width,res.height)
+          this.chart = initChart(canvas, res.width, res.height)
         }
       }).exec();
     },

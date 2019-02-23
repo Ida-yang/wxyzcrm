@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" @click="clickHandle">
         <div class="showinfo">
             <ul class="showinfo-ul">
                 <li>今日新增线索：100</li>
@@ -28,18 +28,29 @@
         </div>
 
         <div class="home">
-            <div class="home-query"></div>
+            <div class="home-query">
+                <picker mode="date" :value="date" bindchange="bindDateChange">
+                    <div class="picker-btn">
+                        {{date}}
+                    </div>
+                </picker>
+            </div>
             <div class="home-funnel">
-                <table border="1">
-                    <tr>
-                        <th>Month</th>
-                        <th>Savings</th>
-                    </tr>
-                    <tr>
-                        <td>January</td>
-                        <td>$100</td>
-                    </tr>
-                </table>
+                <ec-canvas class="canvas" id="mychart-dom-bar" canvas-id="mychart-bar" :ec="ec"></ec-canvas>
+            </div>
+            <div class="home-table">
+                <div class="table">
+                    <div class="tr">
+                        <div class="th">阶段</div>
+                        <div class="th">数量</div>
+                        <div class="th">金额</div>
+                    </div>
+                    <div class="tr" v-for="item in listData" :key="item.id">
+                        <div class="td">{{item.text}}</div>
+                        <div class="td">{{item.code}}</div>
+                        <div class="td">{{item.num}}</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -87,6 +98,62 @@
                 motto: 'Hello miniprograme',
                 userInfo: {
                     nickName: 'mpvue',
+                },
+                date: '2016-09',
+                listData:[
+                    {id:1,text:'展现',code:'200',num:'30000'},
+                    {id:2,text:'点击',code:'200',num:'30000'},
+                    {id:3,text:'访问',code:'200',num:'30000'},
+                    {id:4,text:'咨询',code:'200',num:'30000'},
+                ],
+                ec: {
+                    // 传 options
+                    options: {
+                        title: {
+                            text: '商机漏斗',
+                            left: 'center',
+                            top: 10
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{b}{a}：{c}"
+                        },
+                        legend: {
+                            data: ['展现','点击','访问','咨询','订单'],
+                            bottom: 30
+                        },
+                        calculable: true,
+                        series: [
+                            {
+                                name:'数量',
+                                type:'funnel',
+                                left: '10%',
+                                top: 60,
+                                bottom: 80,
+                                width: '80%',
+                                minSize: '5%',
+                                sort: 'none',
+                                // gap: 2,
+                                label: {
+                                    show: true,
+                                    position: 'inside'
+                                },
+                                emphasis: {
+                                    label: {
+                                        fontSize: 14
+                                    }
+                                },
+                                data: [
+                                    {value: 80, name: '访问'},
+                                    {value: 40, name: '咨询'},
+                                    {value: 20, name: '订单'},
+                                    {value: 80, name: '点击'},
+                                    {value: 100, name: '展现'}
+                                ]
+                            }
+                        ]
+                    },
+                    
                 }
             }
         },
@@ -105,7 +172,13 @@
             clickHandle (ev) {
                 console.log('clickHandle:', ev)
                 // throw {message: 'custom test'}
-            }
+            },
+            bindDateChange: function(e) {
+                console.log(e)
+                this.setData({
+                    date: e.detail.value
+                })
+            },
         },
 
         created () {
@@ -114,7 +187,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .showinfo{
         width: 100%;
     }
@@ -128,6 +201,76 @@
         line-height: 60rpx;
         padding-left: 20rpx;
         border-right: 3rpx solid #cccccc;
+    }
+    ul.showinfo-ul li:last-child{
+        border-right: none;
+    }
+    .home{
+        width: 100%;
+        height:auto;
+    }
+    .home-query{
+        width: 100%;
+        height: 30px;
+        box-sizing: border-box
+    }
+    .picker-btn{
+        display: block;
+        margin: 0 auto;
+        /* width: 100%; */
+        line-height: 30px;
+        text-align: center;
+        background-color: #ffffff;
+        border-bottom: 1rpx solid #cccccc;
+    }
+    .home-funnel{
+        width: 100%;
+        height: 400px;
+    }
+    .home-funnel ec-canvas {
+        width: 400px;
+        height: 400px;
+    }
+    .home-table{
+        width: 100%;
+        padding: 10px;
+        background-color: #ffffff;
+        box-sizing: border-box;
+    }
+    
+    .table {
+        /* border: 0px solid darkgray; */
+        color: #2d2d2d;
+    }
+    .tr {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        height: 60rpx;
+        align-items: center;
+    }
+    
+    .th,.td {
+        width: 40%;
+        height: 60rpx;
+        line-height: 60rpx;
+    }
+    .th{
+        display: flex;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        /* border-top: 1rpx solid darkgray; */
+    }
+    .td {
+        text-align: center;
+        border-right: 1rpx solid darkgray;
+        border-bottom: 1rpx solid darkgray;
+    }
+    .td:first-child{
+        border-left: 1rpx solid darkgray;
+        font-weight: bold;
     }
     .userinfo {
         display: flex;
