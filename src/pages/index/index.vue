@@ -173,11 +173,9 @@
                 console.log('clickHandle:', ev)
                 // throw {message: 'custom test'}
             },
-            bindDateChange: function(e) {
+            bindDateChange(e) {
                 console.log(e)
-                this.setData({
-                    date: e.detail.value
-                })
+                this.date = e.detail.value
             },
         },
 

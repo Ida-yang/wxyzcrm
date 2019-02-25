@@ -5,7 +5,9 @@
     "pages/func/main",
     "pages/report/main",
     "pages/mine/main",
-    "pages/counter/main"
+    "pages/counter/main",
+    "pages/clue/main",
+    "pages/cluedetails/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -44,33 +46,6 @@
       "pagePath": "pages/mine/main",
       "iconPath": "static/tabs/mine.png",
       "selectedIconPath": "static/tabs/mine.png"
-    }],
-
-    "items": [{
-      "name": "首页",
-      "pagePath": "pages/index/main",
-      "icon": "static/tabs/home.png",
-      "activeIcon": "static/tabs/home-active.png"
-    }, {
-      "name": "订单",
-      "pagePath": "pages/logs/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
-    }, {
-      "name": "功能",
-      "pagePath": "pages/func/main",
-      "icon": "static/tabs/func.png",
-      "activeIcon": "static/tabs/func.png"
-    }, {
-      "name": "报表",
-      "pagePath": "pages/report/main",
-      "icon": "static/tabs/report.png",
-      "activeIcon": "static/tabs/report.png"
-    }, {
-      "name": "我的",
-      "pagePath": "pages/mine/main",
-      "icon": "static/tabs/mine.png",
-      "activeIcon": "static/tabs/mine.png"
     }],
     "position": "bottom"
   }

@@ -8,7 +8,7 @@
                     <img class="block-img" src="../../../static/images/user.png" alt="出不来">
                     <p class="block-text">线索</p>
                 </div>
-                <div class="block-item">
+                <div class="block-item" @click="toCustomer">
                     <img class="block-img" src="../../../static/images/user.png" alt="出不来">
                     <p class="block-text">客户</p>
                 </div>
@@ -48,8 +48,16 @@ export default {
     },
     methods:{
         toClue(){
-            wx.redirectTo({
-                url:'../index/index',
+            mpvue.navigateTo({
+                url:'../clue/main',
+                success:function(res){
+                    console.log(res)
+                }
+            })
+        },
+        toCustomer(){
+            mpvue.navigateTo({
+                url:'../counter/main',
                 success:function(res){
                     console.log(res)
                 }
