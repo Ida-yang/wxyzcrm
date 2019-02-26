@@ -13,7 +13,9 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ff5722",
     "navigationBarTitleText": "云纵CRM",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": true,
+    "backgroundColor": "#ff5722"
   },
   "tabBar": {
     "color": "#999",

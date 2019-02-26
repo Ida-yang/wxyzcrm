@@ -29,7 +29,7 @@
 
         <div class="home">
             <div class="home-query">
-                <picker mode="date" :value="date" bindchange="bindDateChange">
+                <picker mode="date" :value="date" fields="month" :end="endDate" @change="search">
                     <div class="picker-btn">
                         {{date}}
                     </div>
@@ -99,7 +99,8 @@
                 userInfo: {
                     nickName: 'mpvue',
                 },
-                date: '2016-09',
+                date: '',
+                endDate: '',
                 listData:[
                     {id:1,text:'展现',code:'200',num:'30000'},
                     {id:2,text:'点击',code:'200',num:'30000'},
@@ -110,9 +111,12 @@
                     // 传 options
                     options: {
                         title: {
-                            text: '商机漏斗',
-                            left: 'center',
-                            top: 10
+                            text: '销售漏斗',
+                            left: 10,
+                            top: 10,
+                            textStyle: {　　　　　　　　　　　　//标题的文字样式
+                                fontSize: 16
+                            }
                         },
                         tooltip: {
                             trigger: 'item',
@@ -160,6 +164,9 @@
         components: {
             card
         },
+        mounted(){
+            this.getDate()
+        },
         methods: {
             bindViewTap () {
                 const url = '../logs/main'
@@ -173,10 +180,19 @@
                 console.log('clickHandle:', ev)
                 // throw {message: 'custom test'}
             },
-            bindDateChange(e) {
-                console.log(e)
-                this.date = e.detail.value
+            search(e) {
+                // console.log(e)
+                this.date = e.mp.detail.value
             },
+            getDate(){
+                let date=new Date;
+                let year=date.getFullYear();
+                let month=date.getMonth()+1;
+                month =(month<10 ? "0"+month:month);
+                this.endDate = year + '-' + month
+                this.date = year + '-' + month
+                // console.log(year + '-' + month)
+            }
         },
 
         created () {
