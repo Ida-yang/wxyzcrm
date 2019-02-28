@@ -2,7 +2,7 @@
     <div class="container">
         <!-- <h1>{{msg}}</h1> -->
         <div class="clue">
-            <div class="weui-search-bar">
+            <header class="weui-search-bar">
                 <div class="weui-search-bar__form">
                     <div class="weui-search-bar__box">
                         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
@@ -14,14 +14,13 @@
                 </div>
                 <div class="weui-search-bar__cancel-btn" @click="search">搜索</div>
                 <div class="weui-search-bar__cancel-btn" @click="showScreen">
-                    <img src="/static/images/user.png" class="icon-style" />
+                    <img src="/static/images/user.png" class="btn-icon" />
                 </div>
-            </div>
-            <div class="weui-cells weui-cells_after-title screen-style" v-if="showScreens">
+            </header>
+            <div class="weui-cells weui-cells_after-title btn-screen" v-if="showScreens">
                 <radio-group @change="radioChange">
                     <label class="weui-cell weui-check__label" v-for="item in screenList" :key="item.id">
                         <radio class="weui-check" :value="item.id" :checked="item.checked"/>
-
                         <div class="weui-cell__bd">{{item.name}}</div>
                         <div class="weui-cell__ft weui-cell__ft_in-radio" v-if="item.checked">
                             <icon class="weui-icon-radio" type="success_no_circle" size="16"></icon>
@@ -29,7 +28,7 @@
                     </label>
                 </radio-group>
             </div>
-            <div class="weui-panel__bd">
+            <div class="weui-panel__bd page-body">
                 <!-- <div class="weui-media-box weui-media-box_text">
                     <div class="weui-media-box__title weui-media-box__title_in-text">标题一</div>
                     <div class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</div>
@@ -40,17 +39,20 @@
                     </div>
                 </div> -->
                 <div class="weui-media-box weui-media-box_text" v-for="item in clueList" :key="item.id" @click="toClueDetails($event,item)">
-                    <div class="weui-media-box__title weui-media-box__title_in-text">线索：{{item.name}}</div>
+                    <div class="weui-media-box__title weui-media-box__title_in-text">{{item.name}}</div>
                     <div class="weui-media-box__desc">{{item.address || '无'}}</div>
                     <div class="weui-media-box__info">
                         <div class="weui-media-box__info__meta">负责人：{{item.privateUser[0].private_employee}}</div>
                         <div class="weui-media-box__info__meta weui-media-box__info__meta_extra">状态：{{item.state}}</div>
                     </div>
                 </div>
+                <div class="weui-footer page-footer" v-if="noMore">
+                    <div class="weui-footer__text">-----  我是有底线的  -----</div>
+                </div>
             </div>
-            <div class="weui-footer page-footer" v-if="noMore">
-                <div class="weui-footer__text">---我是有底线的---</div>
-            </div>
+            <footer class="btn-add">
+                <button class="weui-btn" type="default" @click="toAddClue">新增</button>
+            </footer>
         </div>
     </div>
 </template>
@@ -90,6 +92,8 @@
         },
         onPullDownRefresh(){
             this.init = true
+            this.noMore = false
+            this.page = 1
             this.loadData()
             // wx.stopPullDownRefresh()
         },
@@ -122,7 +126,7 @@
                             console.log('我不是第一次加载了')
                         }
                         // console.log(_this.clueList)
-                        if(cluedata.length < 15){
+                        if(cluedata.length < 15 && _this.page !== 1){
                             _this.noMore = true
                             return false
                         }
@@ -131,6 +135,8 @@
             },
             clearInput() {
                 this.inputVal = ""
+                this.init = true
+                this.page = 1
                 this.iconShowed = false
                 this.loadData()
             },
@@ -140,6 +146,8 @@
             search(){
                 console.log(this.inputVal)
                 this.init = true
+                this.page = 1
+                this.noMore = false
                 this.loadData()
             },
             showScreen(){
@@ -172,7 +180,15 @@
                         console.log(res)
                     }
                 })
-            }
+            },
+            toAddClue(){
+                mpvue.navigateTo({
+                    url:'../clueadd/main',
+                    success:function(res){
+                        console.log(res)
+                    }
+                })
+            },
         }
     }
 </script>
@@ -185,12 +201,15 @@
     .weui-search-bar__form{
         height: 56rpx;
     }
-    .icon-style{
+    .btn-icon{
         width: 50rpx;
         height: 50rpx;
     }
-    .screen-style{
+    .btn-screen{
         font-size: 26rpx;
+    }
+    .page-body{
+        margin-bottom: 80rpx;
     }
     .page-footer{
         height: 40rpx;

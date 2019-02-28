@@ -29,7 +29,7 @@
 
         <div class="home">
             <div class="home-query">
-                <picker mode="date" :value="date" fields="month" :end="endDate" @change="search">
+                <picker mode="date" :value="date" fields="month" start="2000-01" :end="endDate" @change="search">
                     <div class="picker-btn">
                         {{date}}
                     </div>
@@ -75,15 +75,18 @@
         </form>
 
         <div class="all">
-            <div class="left">
-                1
+            <div class="left" @click="chooseImg">
+                相机或相册
             </div>
-            <div class="middle">
-                2
+            <div class="middle" @click="getLocation">
+                获取地址
             </div>
             <div class="right">
                 3
             </div>
+        </div>
+        <div>
+            <img class="chooseimage" :src="tempFilePaths" v-if="chooseimage" />
         </div>
     </div>
 </template>
@@ -158,7 +161,9 @@
                         ]
                     },
                     
-                }
+                },
+                tempFilePaths: '',
+                chooseimage: false
             }
         },
         components: {
@@ -192,7 +197,36 @@
                 this.endDate = year + '-' + month
                 this.date = year + '-' + month
                 // console.log(year + '-' + month)
-            }
+            },
+            chooseImg(){
+                const _this = this
+                wx.chooseImage({
+                    count: 1,
+                    sizeType: ['original', 'compressed'],
+                    sourceType: ['album', 'camera'],
+                    success(res) {
+                        console.log(res)
+                        // tempFilePath可以作为img标签的src属性显示图片
+                        _this.chooseimage = true
+                        _this.tempFilePaths = res.tempFilePaths[0]
+                    }
+                })
+            },
+            getLocation(){
+                wx.getLocation({
+                    type: 'gcj02', // 返回可以用于wx.openLocation的经纬度
+                    success(res) {
+                        console.log(res)
+                        const latitude = res.latitude
+                        const longitude = res.longitude
+                        wx.openLocation({
+                            latitude,
+                            longitude,
+                            scale: 18
+                        })
+                    }
+                })
+            },
         },
 
         created () {
@@ -340,5 +374,9 @@
         width:2.5rem;
         height:1rem;
         background-color:green;
+    }
+    .chooseimage{
+        width: 570rpx;
+        height: 1200rpx;
     }
 </style>

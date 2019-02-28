@@ -45,21 +45,79 @@ export default {
 </script>
 
 <style>
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  /* padding: 200rpx 0; */
-  box-sizing: border-box;
-  font-size: 28rpx;
-}
-/* this rule will be remove */
-* {
-  transition: width 2s;
-  -moz-transition: width 2s;
-  -webkit-transition: width 2s;
-  -o-transition: width 2s;
-}
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    /* padding: 200rpx 0; */
+    box-sizing: border-box;
+    font-size: 28rpx;
+  }
+  /* this rule will be remove */
+  * {
+    transition: width 2s;
+    -moz-transition: width 2s;
+    -webkit-transition: width 2s;
+    -o-transition: width 2s;
+  }
+  /* 添加按钮 */
+  .btn-add{
+    width:100%; 
+    background-color: #d9d9d9;
+    position:fixed; 
+    bottom:0; 
+  }
+  /* 确认按钮 */
+  .btn-sure{
+    /* margin-top: 30rpx; */
+    /* margin-bottom: 20rpx; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* 自定义的按钮（白色的按钮） */
+  .btn-custom{
+    width: 40%;
+    background-color: #ff5722;
+    color: #ffffff;
+  }
+  /* 详情页 */
+  .details{
+    width: 100%;
+    background-color: #f0f0f0;
+  }
+  /* 详情页的联系人和跟进记录有多个 */
+  .detail-contact,.detail-follow{
+    margin-bottom: 10rpx;
+    background-color: #ffffff;
+  }
+  .detail-info{
+    background-color: #ffffff;
+  }
+  .weui-btn{
+    font-size: 34rpx;
+  }
+  .details_bd{
+    background-color: #ffffff;
+    margin-bottom: 50rpx;
+  }
+  .weui-media-box__desc{
+    line-height: 40rpx;
+    text-align: left;
+  }
+  .weui-form-preview__value{
+    color: #000000;
+    text-align: right
+  }
+  .weui-navbar{
+    background-color: #ffffff;
+  }
+  .weui-tab__panel {
+    padding-top:110rpx;
+  }
+  .weui-tab__content{
+    text-align: center;
+  }
 </style>
