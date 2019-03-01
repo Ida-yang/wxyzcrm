@@ -63,7 +63,7 @@ export default {
     -o-transition: width 2s;
   }
   /* 添加按钮 */
-  .btn-add{
+  .btn-bottom{
     width:100%; 
     background-color: #d9d9d9;
     position:fixed; 
@@ -77,11 +77,14 @@ export default {
     justify-content: center;
     align-items: center;
   }
-  /* 自定义的按钮（白色的按钮） */
+  /* 自定义的按钮（主题色的按钮） */
   .btn-custom{
     width: 40%;
     background-color: #ff5722;
     color: #ffffff;
+  }
+  .btn-white{
+    background-color: #ffffff;
   }
   /* 详情页 */
   .details{
@@ -102,10 +105,6 @@ export default {
   .details_bd{
     background-color: #ffffff;
     margin-bottom: 50rpx;
-  }
-  .weui-media-box__desc{
-    line-height: 40rpx;
-    text-align: left;
   }
   .weui-form-preview__value{
     color: #000000;

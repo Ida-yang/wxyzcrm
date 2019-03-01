@@ -186,14 +186,14 @@
                 // throw {message: 'custom test'}
             },
             search(e) {
-                // console.log(e)
+                // console.log(e.mp.detail.value)
                 this.date = e.mp.detail.value
             },
             getDate(){
-                let date=new Date;
-                let year=date.getFullYear();
-                let month=date.getMonth()+1;
-                month =(month<10 ? "0"+month:month);
+                let date = new Date;
+                let year = date.getFullYear();
+                let month = date.getMonth()+1;
+                month = (month < 10 ? "0" + month : month);
                 this.endDate = year + '-' + month
                 this.date = year + '-' + month
                 // console.log(year + '-' + month)

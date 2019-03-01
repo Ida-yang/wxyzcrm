@@ -30,18 +30,24 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
 					"name": "单页调试",
-					"pathName": "pages/cluedetails/main",
+					"pathName": "pages/clue/main",
 					"query": ""
 				},
 				{
 					"id": 1,
 					"name": "单页调试2",
 					"pathName": "pages/clueadd/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "单页调试3",
+					"pathName": "pages/cluedetails/main",
 					"query": ""
 				}
 			]

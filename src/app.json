@@ -8,7 +8,9 @@
     "pages/counter/main",
     "pages/clue/main",
     "pages/clueadd/main",
-    "pages/cluedetails/main"
+    "pages/cluedetails/main",
+    "pages/contactadd/main",
+    "pages/followadd/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

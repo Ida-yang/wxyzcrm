@@ -50,7 +50,7 @@
                     <div class="weui-footer__text">-----  我是有底线的  -----</div>
                 </div>
             </div>
-            <footer class="btn-add">
+            <footer class="btn-bottom">
                 <button class="weui-btn" type="default" @click="toAddClue">新增</button>
             </footer>
         </div>
@@ -86,7 +86,7 @@
             this.loadData()
         },
         onReachBottom(){
-            console.log('碰到底部啦')
+            // console.log('碰到底部啦')
             this.page = this.page + 1
             this.loadData()
         },
@@ -114,16 +114,16 @@
                     //     'content-type': 'application/json'  //默认值
                     // },
                     success:function(res) {
-                        console.log(res.data.map.success)
+                        // console.log(res.data.map.success)
                         let cluedata = res.data.map.success
                         if(_this.init == true){
                             _this.clueList = cluedata
                             _this.init = false
                             wx.stopPullDownRefresh()
-                            console.log('我是第一次加载')
+                            // console.log('我是第一次加载')
                         }else{
                             _this.clueList = _this.clueList.concat(cluedata)
-                            console.log('我不是第一次加载了')
+                            // console.log('我不是第一次加载了')
                         }
                         // console.log(_this.clueList)
                         if(cluedata.length < 15 && _this.page !== 1){
@@ -144,7 +144,7 @@
                 this.iconShowed = true
             },
             search(){
-                console.log(this.inputVal)
+                // console.log(this.inputVal)
                 this.init = true
                 this.page = 1
                 this.noMore = false
@@ -158,7 +158,7 @@
                 }
             },
             radioChange(e) {
-                console.log('radio发生change事件，携带value值为：', e.mp.detail.value);
+                // console.log('radio发生change事件，携带value值为：', e.mp.detail.value);
 
                 var screenList = this.screenList;
                 for (var i = 0, len = screenList.length; i < len; i++) {
