@@ -29,15 +29,6 @@
                 </radio-group>
             </div>
             <div class="weui-panel__bd page-body">
-                <!-- <div class="weui-media-box weui-media-box_text">
-                    <div class="weui-media-box__title weui-media-box__title_in-text">标题一</div>
-                    <div class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</div>
-                    <div class="weui-media-box__info">
-                        <div class="weui-media-box__info__meta">文字来源</div>
-                        <div class="weui-media-box__info__meta">时间</div>
-                        <div class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</div>
-                    </div>
-                </div> -->
                 <div class="weui-media-box weui-media-box_text" v-for="item in clueList" :key="item.id" @click="toClueDetails($event,item)">
                     <div class="weui-media-box__title weui-media-box__title_in-text">{{item.name}}</div>
                     <div class="weui-media-box__desc">{{item.address || '无'}}</div>
@@ -82,9 +73,9 @@
                 noMore: false
             }
         },
-        mounted(){
-            this.loadData()
-        },
+        // mounted(){
+        //     this.loadData()
+        // },
         onReachBottom(){
             // console.log('碰到底部啦')
             this.page = this.page + 1
@@ -97,6 +88,12 @@
             this.loadData()
             // wx.stopPullDownRefresh()
         },
+        onShow(){
+            this.init = true
+            this.noMore = false
+            this.page = 1
+            this.loadData()
+        },
         methods:{
             async loadData(){
                 const _this = this
@@ -104,17 +101,14 @@
                 //     this.page = this.page + 1
                 // }
                 wx.request({
-                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891',  //接口地址
+                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891' + '&pId=' + '89',  //接口地址
                     data: {
                         page: _this.page,
                         limit: _this.limit,
                         searchName: _this.inputVal
                     },
-                    // header: {
-                    //     'content-type': 'application/json'  //默认值
-                    // },
                     success:function(res) {
-                        // console.log(res.data.map.success)
+                        console.log(res.data.map.success)
                         let cluedata = res.data.map.success
                         if(_this.init == true){
                             _this.clueList = cluedata

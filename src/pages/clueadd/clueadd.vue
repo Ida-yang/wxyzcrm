@@ -10,8 +10,8 @@
                             <div class="weui-label">线索来源<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <picker @change="bindCountryChange" :value="countryIndex" :range="countries">
-                                <div class="weui-select">{{countries[countryIndex]}}</div>
+                            <picker @change="cueChange" v-model="InfoList.cue" :value="cueIndex" :range="cues">
+                                <div class="weui-select">{{cues[cueIndex]}}</div>
                             </picker>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                             <div class="weui-label">公司名称<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" />
+                            <input class="weui-input" :value="InfoList.name" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -32,7 +32,7 @@
                             <div class="weui-label">联系人<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" />
+                            <input class="weui-input" :value="InfoList.coName" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -40,7 +40,7 @@
                             <div class="weui-label">电话<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" />
+                            <input class="weui-input" :value="InfoList.telphone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -48,7 +48,7 @@
                             <div class="weui-label">手机</div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" />
+                            <input class="weui-input" :value="InfoList.phone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -56,7 +56,7 @@
                             <div class="weui-label">地址</div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" />
+                            <input class="weui-input" :value="InfoList.address" @input="inputval" />
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                 <div class="weui-cells weui-cells_after-title">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <textarea class="weui-textarea" style="height: 5.3em; line-height: 1.5em" />
+                            <textarea class="weui-textarea" :value="InfoList.remark" style="height: 5.3em; line-height: 1.5em" @input="inputval" />
                             <div class="weui-textarea-counter">0/200</div>
                         </div>
                     </div>
@@ -82,25 +82,126 @@
 </template>
 
 <script>
-export default {
-    data(){
-        return{
-            msg:'线索新增',
+    import config from '../../config'
 
-            countries: ["中国", "美国", "英国"],
-            countryIndex: 0,
+    export default {
+        data(){
+            return{
+                msg:'线索新增',
+
+                cues: [],
+                cueId: [],
+                cueIndex: 0,
+
+                InfoList:{
+                    cue:'',
+                    name:'',
+                    coName:'',
+                    telphone:'',
+                    phone:'',
+                    address:'',
+                    remark:'',
+                }
+            }
+        },
+        mounted(){
+            this.loaddata()
+        },
+        methods:{
+            loaddata(){
+                const _this = this
+                wx.request({
+                    url: config.host + 'typeInfo/getTypeInfoGroupByType.do?cId=' +'201901973891',  //接口地址
+                    data: {
+                        type: '客户来源'
+                    },
+                    success: function (res) {
+                        console.log(res.data)
+                        let cueData = res.data
+                        cueData.forEach((el,i) => {
+                            // console.log(el.typeName)
+                            _this.cues.push(el.typeName)
+                            _this.cueId.push(el.id)
+                        });
+                        _this.InfoList.cue = _this.cueId[_this.cueIndex]
+                    }
+                })
+            },
+            cueChange(e){
+                // console.log('picker country 发生选择改变，携带值为', e.mp.detail.value);
+                this.cueIndex = e.mp.detail.value
+            },
+            inputval(e){
+                // console.log(e.currentTarget.dataset.eventid)
+                if(e.currentTarget.dataset.eventid == '1'){
+                    this.InfoList.name = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '2'){
+                    this.InfoList.coName = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '3'){
+                    this.InfoList.telphone = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '4'){
+                    this.InfoList.phone = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '5'){
+                    this.InfoList.address = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '6'){
+                    this.InfoList.remark = e.mp.detail.value
+                }
+            },
+            addClick(){
+                // console.log(this.InfoList)
+                let InfoList = [this.InfoList]
+                // console.log(InfoList)
+                let flag = true
+                InfoList.forEach(el => {
+                    console.log(el.name)
+                    if(!el.name){
+                        wx.showModal({
+                            content: '请填写公司名称再提交',
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    console.log('用户点击确定')
+                                }
+                            }
+                        });
+                        return flag = false
+                    }
+                    if(!el.coName){
+                        wx.showModal({
+                            content: '请填写联系人再提交',
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    console.log('用户点击确定')
+                                }
+                            }
+                        });
+                        return flag = false
+                    }
+                    if(!el.telphone){
+                        wx.showModal({
+                            content: '请填写电话再提交',
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    console.log('用户点击确定')
+                                }
+                            }
+                        });
+                        return flag = false
+                    }
+                });
+                
+                if(flag){
+                    wx.showToast({
+                        title: '已完成',
+                        icon: 'success',
+                        duration: 2000
+                    });
+                }
+            },
         }
-    },
-    methods:{
-        bindCountryChange(e){
-            console.log('picker country 发生选择改变，携带值为', e.mp.detail.value);
-            this.countryIndex = e.mp.detail.value
-        },
-        addClick(){
-            console.log('我点确定了')
-        },
     }
-}
 </script>
 
 <style scoped>
@@ -108,7 +209,7 @@ export default {
         width: 100%;
         padding-top: 100rpx;
     }
-    .weui-cells{
+    .weui-cells,.weui-cells__title{
         font-size: 30rpx;
     }
     .weui-cell__hd{

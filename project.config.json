@@ -30,24 +30,30 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
-					"name": "单页调试",
+					"name": "线索单页调试",
 					"pathName": "pages/clue/main",
 					"query": ""
 				},
 				{
 					"id": 1,
-					"name": "单页调试2",
+					"name": "新增线索单页调试",
 					"pathName": "pages/clueadd/main",
 					"query": ""
 				},
 				{
-					"id": -1,
-					"name": "单页调试3",
+					"id": 2,
+					"name": "线索详情单页调试",
 					"pathName": "pages/cluedetails/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "跟进记录单页调试",
+					"pathName": "pages/followadd/main",
 					"query": ""
 				}
 			]

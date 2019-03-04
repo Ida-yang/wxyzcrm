@@ -21,7 +21,18 @@
                 </div>
                 <div class="weui-tab__panel">
                     <div class="weui-tab__content" :hidden="activeIndex != 0">
-                        <div class="detail-follow" v-for="item in followList" :key="item.id">
+                        <div class="weui-media-box weui-media-box_text" v-for="item in followList" :key="item.id">
+                            <div class="weui-media-box__title weui-media-box__title_in-text">
+                                {{item.coName}}
+                                <span class="weui-cell__ft weui-cell__ft_in-access"></span>
+                                <span class="_name">&nbsp;&nbsp;&nbsp;{{item.followType}}</span>
+                            </div>
+                            <div class="weui-media-box__desc">{{item.followContent}}</div>
+                            <div class="weui-media-box__info">
+                                <div class="weui-media-box__info__meta">{{item.createTime}}</div>
+                            </div>
+                        </div>
+                        <!-- <div class="detail-follow" v-for="item in followList" :key="item.id">
                             <div class="weui-panel__hd">
                                 <div class="weui-form-preview__label">联系人</div>
                                 <div class="weui-form-preview__value">{{item.coName}}</div>
@@ -33,7 +44,7 @@
                             <div class="weui-media-box">
                                 <div class="weui-media-box__desc">{{item.followContent}}</div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div style="height:80rpx;background-color:#fff;"></div>
 
@@ -55,7 +66,7 @@
                         <div class="detail-contact" v-for="item in contactsList" :key="item.id">
                             <div class="weui-panel__hd">
                                 <div class="weui-form-preview__label">联系人</div>
-                                <div class="weui-form-preview__value">{{item.name}}</div>
+                                <div class="weui-form-preview__value">{{item.name || '无'}}</div>
                             </div>
                             <div class="weui-panel__hd">
                                 <div class="weui-form-preview__label">电话</div>
@@ -63,11 +74,8 @@
                             </div>
                         </div>
                         <div style="height:80rpx;background-color:#fff;"></div>
-                        
-                        <div class="btn-bottom">
-                            <button class="weui-btn btn-white" @click="toAddContact">新增联系人</button>
-                        </div>
                     </div>
+
                     <div class="weui-tab__content" :hidden="activeIndex != 2">
                         <div class="weui-panel__hd detail-info">
                             <div class="weui-form-preview__label">线索</div>
@@ -145,6 +153,7 @@
             },
             LoadData(){
                 const _this = this
+                this.showJump = false
                 //获取线索详情
                 wx.request({
                     url: config.host + 'customerTwo/selectByPrimaryKey.do?cId=' +'201901973891',  //接口地址
@@ -152,7 +161,7 @@
                         id: this.optionId
                     },
                     success: function (res) {
-                        // console.log(res.data)
+                        console.log(res.data)
                         _this.detailsList = res.data
                         _this.decontactsList = res.data.contacts[0]
                     }
@@ -165,7 +174,7 @@
                         limit: 10000
                     },
                     success: function (res) {
-                        // console.log(res.data.map.success)
+                        console.log(res.data.map.success)
                         _this.contactsList = res.data.map.success
                     }
                 })
@@ -210,7 +219,7 @@
             },
             toAddContact(){
                 mpvue.navigateTo({
-                    url:'../contactadd/main',
+                    url:'../contactadd/main?id=' + this.optionId,
                     success:function(res){
                         console.log(res)
                     }
@@ -218,39 +227,69 @@
             },
             toAddFollow(){
                 mpvue.navigateTo({
-                    url:'../followadd/main',
+                    url:'../followadd/main?id=' + this.optionId,
                     success:function(res){
                         console.log(res)
                     }
                 })
             },
+            //打开更多操作
             toJump(){
                 this.showJump = !this.showJump
             },
             toCustomer(){
-                wx.showToast({
-                    title: '已完成',
-                    icon: 'success',
-                    duration: 2000
-                });
+                const _this = this
+                wx.request({
+                    url: config.host + 'customerTwo/insert.do?cId=' + '201901973891' + '&pId=' + '89',  //接口地址
+                    data: {
+                        id: _this.optionId,
+                    },
+                    success:function(res) {
+                        console.log(res)
+                        wx.showToast({
+                            title: '已完成',
+                            icon: 'success',
+                            duration: 2000
+                        });
+                        wx.navigateBack({
+                            delta: 1
+                        })
+                    }
+                })
             },
             toCluePool(){
-                wx.showToast({
-                    title: '已完成',
-                    icon: 'success',
-                    duration: 2000
-                });
+                const _this = this
+                wx.request({
+                    url: config.host + 'customerTwo/updateState.do?cId=' + '201901973891' + '&pId=' + '89',  //接口地址
+                    data: {
+                        id: _this.optionId,
+                    },
+                    success:function(res) {
+                        console.log(res)
+                        wx.showToast({
+                            title: '已完成',
+                            icon: 'success',
+                            duration: 2000
+                        });
+                        wx.navigateBack({
+                            delta: 1
+                        })
+                    }
+                })
             },
         },
     }
 </script>
 
 <style scoped>
+    .weui-media-box__desc,.weui-media-box__title{
+        text-align: left;
+        font-size: 30rpx;
+    }
     .weui-media-box__desc{
         line-height: 40rpx;
-        text-align: left;
     }
-    .btn-bottom{
+    .btn-bottom,.weui-media-box{
         background-color: #ffffff;
     }
     .btn-left{
@@ -259,15 +298,21 @@
     }
     .jump_content{
         width: 60%;
-        height: 165rpx;
-        /* background-color: #b98383; */
         position: fixed;
         bottom: 80rpx;
         right: 0;
-        /* border: 1rpx solid #d9d9d9;
-        border-radius: 10rpx; */
+    }
+    .weui-btn{
+        font-size: 30rpx
     }
     .weui-btn + .weui-btn{
         margin: 0;
+    }
+    ._name{
+        color: #999
+    }
+    .weui-navbar__slider{
+        background-color: #ff5722;
+        border-bottom: 1rpx solid #ff5722
     }
 </style>
