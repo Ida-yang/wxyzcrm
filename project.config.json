@@ -53,7 +53,7 @@
 				{
 					"id": -1,
 					"name": "跟进记录单页调试",
-					"pathName": "pages/followadd/main",
+					"pathName": "pages/cluefollowadd/main",
 					"query": ""
 				}
 			]

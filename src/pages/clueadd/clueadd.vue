@@ -10,7 +10,7 @@
                             <div class="weui-label">线索来源<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <picker @change="cueChange" v-model="InfoList.cue" :value="cueIndex" :range="cues">
+                            <picker @change="cueChange" v-model="InfoList.cueid" :value="cueIndex" :range="cues">
                                 <div class="weui-select">{{cues[cueIndex]}}</div>
                             </picker>
                         </div>
@@ -24,7 +24,7 @@
                             <div class="weui-label">公司名称<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.name" @input="inputval" />
+                            <input class="weui-input" :value="InfoList.poolname" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -94,8 +94,8 @@
                 cueIndex: 0,
 
                 InfoList:{
-                    cue:'',
-                    name:'',
+                    cueid:'',
+                    poolname:'',
                     coName:'',
                     telphone:'',
                     phone:'',
@@ -123,7 +123,7 @@
                             _this.cues.push(el.typeName)
                             _this.cueId.push(el.id)
                         });
-                        _this.InfoList.cue = _this.cueId[_this.cueIndex]
+                        _this.InfoList.cueid = _this.cueId[_this.cueIndex]
                     }
                 })
             },
@@ -134,7 +134,7 @@
             inputval(e){
                 // console.log(e.currentTarget.dataset.eventid)
                 if(e.currentTarget.dataset.eventid == '1'){
-                    this.InfoList.name = e.mp.detail.value
+                    this.InfoList.poolname = e.mp.detail.value
                 }else if(e.currentTarget.dataset.eventid == '2'){
                     this.InfoList.coName = e.mp.detail.value
                 }else if(e.currentTarget.dataset.eventid == '3'){
@@ -148,13 +148,13 @@
                 }
             },
             addClick(){
-                // console.log(this.InfoList)
+                console.log(this.InfoList)
                 let InfoList = [this.InfoList]
                 // console.log(InfoList)
                 let flag = true
                 InfoList.forEach(el => {
-                    console.log(el.name)
-                    if(!el.name){
+                    // console.log(el.poolname)
+                    if(!el.poolname){
                         wx.showModal({
                             content: '请填写公司名称再提交',
                             showCancel: false,
@@ -193,11 +193,46 @@
                 });
                 
                 if(flag){
-                    wx.showToast({
-                        title: '已完成',
-                        icon: 'success',
-                        duration: 2000
-                    });
+                    const _this = this
+                    wx.request({
+                        method: 'post',
+                        url: config.host + 'customerTwo/saveClue.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
+                        data: {
+                            cuesid: _this.InfoList.cueid,
+                            poolName: _this.InfoList.poolname,
+                            contactsName: _this.InfoList.coName,
+                            telphone: _this.InfoList.telphone,
+                            phone: _this.InfoList.phone,
+                            address: _this.InfoList.address,
+                            remark: _this.InfoList.remark,
+                        },
+                        header:{
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        success:function(res) {
+                            console.log(res)
+                            if(res.data.code && res.data.code == '200'){
+                                wx.showToast({
+                                    title: '已完成',
+                                    icon: 'success',
+                                    duration: 2000
+                                });
+                                wx.navigateBack({
+                                    delta: 1
+                                })
+                            }else{
+                                wx.showModal({
+                                    content: res.data.msg,
+                                    showCancel: false,
+                                    success(res) {
+                                        if (res.confirm) {
+                                            console.log('用户点击确定')
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
                 }
             },
         }

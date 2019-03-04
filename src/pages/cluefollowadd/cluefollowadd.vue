@@ -78,7 +78,7 @@
                 msg:'添加跟进记录',
                 clueId:'',
 
-                ways: ["微信", "电话", "QQ"],
+                ways: ["电话", "微信", "QQ", "邮箱"],
                 wayIndex: 0,
 
                 contacts: [],
@@ -111,6 +111,10 @@
                 const _this = this
                 this.InfoList.way = this.ways[this.wayIndex]
                 this.InfoList.followcon = ''
+                this.states = []
+                this.statesId = []
+                this.contacts = []
+                this.contactsId = []
                 //获取联系方式
                 wx.request({
                     url: config.host + 'typeInfo/getTypeInfoGroupByType.do?cId=' +'201901973891',  //接口地址
@@ -119,7 +123,7 @@
                     },
                     success: function (res) {
                         // console.log(res.data)
-                        let stateData = res.data
+                        let stateData = res.data.slice(1)
                         stateData.forEach((el,i) => {
                             // console.log(el.typeName)
                             _this.states.push(el.typeName)
@@ -135,7 +139,7 @@
                         limit: 1000
                     },
                     success: function (res) {
-                        // console.log(res.data)
+                        console.log(res.data)
                         let conData = res.data.map.success
                         conData.forEach((el,i) => {
                             // console.log(el.name)
@@ -151,8 +155,8 @@
                 let pages = getCurrentPages()    //获取加载的页面
                 let currentPage = pages[pages.length-1]    //获取当前页面的对象
                 let url = currentPage.route    //当前页面url
-                // this.clueId = currentPage.options.id      //上个页面带过来的参数
-                this.clueId = 2785
+                this.clueId = currentPage.options.id      //上个页面带过来的参数
+                // this.clueId = 2785
                 // console.log(this.clueId)
             },
             //获取时间
@@ -198,11 +202,47 @@
                         }
                     });
                 }else{
-                    wx.showToast({
-                        title: '已完成',
-                        icon: 'success',
-                        duration: 2000
-                    });
+                    const _this = this
+                    wx.request({
+                        method: 'post',
+                        url: config.host + 'addFollow.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
+                        data: {
+                            customertwo_id: _this.clueId,
+                            deptid: 61,
+                            secondid:2,
+                            followType: _this.InfoList.way,
+                            contactTime: _this.InfoList.date,
+                            followContent: _this.InfoList.followcon,
+                            contactsId: _this.InfoList.contact,
+                            follow_state: _this.InfoList.state
+                        },
+                        header:{
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        success:function(res) {
+                            console.log(res)
+                            if(res.data.code && res.data.code == '200'){
+                                wx.showToast({
+                                    title: '已完成',
+                                    icon: 'success',
+                                    duration: 2000
+                                });
+                                // wx.navigateBack({
+                                //     delta: 1
+                                // })
+                            }else{
+                                wx.showModal({
+                                    content: res.data.msg,
+                                    showCancel: false,
+                                    success(res) {
+                                        if (res.confirm) {
+                                            console.log('用户点击确定')
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
                 }
             }
         },

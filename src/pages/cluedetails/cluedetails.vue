@@ -136,7 +136,7 @@
                 showJump:false
             }
         },
-        mounted(){
+        onShow(){
             this.getItems()
             this.LoadData()
             this.loadInfo()
@@ -219,7 +219,7 @@
             },
             toAddContact(){
                 mpvue.navigateTo({
-                    url:'../contactadd/main?id=' + this.optionId,
+                    url:'../customerCoadd/main?id=' + this.optionId,
                     success:function(res){
                         console.log(res)
                     }
@@ -227,7 +227,7 @@
             },
             toAddFollow(){
                 mpvue.navigateTo({
-                    url:'../followadd/main?id=' + this.optionId,
+                    url:'../cluefollowadd/main?id=' + this.optionId,
                     success:function(res){
                         console.log(res)
                     }
@@ -240,40 +240,73 @@
             toCustomer(){
                 const _this = this
                 wx.request({
-                    url: config.host + 'customerTwo/insert.do?cId=' + '201901973891' + '&pId=' + '89',  //接口地址
+                    method: 'post',
+                    url: config.host + 'customerTwo/insert.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
                     data: {
                         id: _this.optionId,
                     },
+                    header:{
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
                     success:function(res) {
                         console.log(res)
-                        wx.showToast({
-                            title: '已完成',
-                            icon: 'success',
-                            duration: 2000
-                        });
-                        wx.navigateBack({
-                            delta: 1
-                        })
+                        if(res.data && res.data == 'success'){
+                            wx.showToast({
+                                title: '已完成',
+                                icon: 'success',
+                                image: '../../../static/images/user.png',
+                                duration: 2000
+                            });
+                            wx.navigateBack({
+                                delta: 1
+                            })
+                        }else{
+                            wx.showModal({
+                                content: res.data.msg,
+                                showCancel: false,
+                                success(res) {
+                                    if (res.confirm) {
+                                        console.log('用户点击确定')
+                                    }
+                                }
+                            });
+                        }
                     }
                 })
             },
             toCluePool(){
                 const _this = this
                 wx.request({
-                    url: config.host + 'customerTwo/updateState.do?cId=' + '201901973891' + '&pId=' + '89',  //接口地址
+                    method: 'post',
+                    url: config.host + 'customerTwo/updateState.do?cId=' + '201901973891',  //接口地址
                     data: {
                         id: _this.optionId,
                     },
+                    header:{
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
                     success:function(res) {
                         console.log(res)
-                        wx.showToast({
-                            title: '已完成',
-                            icon: 'success',
-                            duration: 2000
-                        });
-                        wx.navigateBack({
-                            delta: 1
-                        })
+                        if(res.data && res.data == 'success'){
+                            wx.showToast({
+                                title: '已完成',
+                                icon: 'success',
+                                duration: 2000
+                            });
+                            wx.navigateBack({
+                                delta: 1
+                            })
+                        }else{
+                            wx.showModal({
+                                content: res.data.msg,
+                                showCancel: false,
+                                success(res) {
+                                    if (res.confirm) {
+                                        console.log('用户点击确定')
+                                    }
+                                }
+                            });
+                        }
                     }
                 })
             },

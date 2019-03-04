@@ -101,7 +101,7 @@
                 //     this.page = this.page + 1
                 // }
                 wx.request({
-                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891' + '&pId=' + '89',  //接口地址
+                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891' + '&pId=' + '93',  //接口地址
                     data: {
                         page: _this.page,
                         limit: _this.limit,

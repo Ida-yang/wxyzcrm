@@ -9,8 +9,8 @@
     "pages/clue/main",
     "pages/clueadd/main",
     "pages/cluedetails/main",
-    "pages/contactadd/main",
-    "pages/followadd/main"
+    "pages/cluefollowadd/main",
+    "pages/customerCoadd/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
