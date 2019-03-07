@@ -8,6 +8,7 @@
     "pages/counter/main",
     "pages/clue/main",
     "pages/clueadd/main",
+    "pages/clueupdate/main",
     "pages/cluedetails/main",
     "pages/cluefollowadd/main",
     "pages/customerCoadd/main"
@@ -29,28 +30,28 @@
     "list": [{
       "text": "首页",
       "pagePath": "pages/index/main",
-      "iconPath": "static/tabs/home.png",
-      "selectedIconPath": "static/tabs/home-active.png"
+      "iconPath": "static/tabs/shouye.png",
+      "selectedIconPath": "static/tabs/shouye_1.png"
     }, {
       "text": "订单",
       "pagePath": "pages/logs/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/dingdan.png",
+      "selectedIconPath": "static/tabs/dingdan.png"
     }, {
       "text": "功能",
       "pagePath": "pages/func/main",
-      "iconPath": "static/tabs/func.png",
-      "selectedIconPath": "static/tabs/func.png"
+      "iconPath": "static/tabs/gongneng.png",
+      "selectedIconPath": "static/tabs/gongnengguanli.png"
     }, {
       "text": "报表",
       "pagePath": "pages/report/main",
-      "iconPath": "static/tabs/report.png",
-      "selectedIconPath": "static/tabs/report.png"
+      "iconPath": "static/tabs/baobiao1.png",
+      "selectedIconPath": "static/tabs/baobiao2.png"
     }, {
       "text": "我的",
       "pagePath": "pages/mine/main",
-      "iconPath": "static/tabs/mine.png",
-      "selectedIconPath": "static/tabs/mine.png"
+      "iconPath": "static/tabs/yonghu.png",
+      "selectedIconPath": "static/tabs/wodedangxuan.png"
     }],
     "position": "bottom"
   },

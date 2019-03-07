@@ -3,6 +3,8 @@
         <!-- <h1>{{msg}}</h1> -->
         <div class="followadd">
             <div class="page__bd">
+
+                <div class="_name">{{clueName}}</div>
                 
                 <div class="weui-cells weui-cells_after-title">
                     <div class="weui-cell weui-cell_select">
@@ -77,6 +79,7 @@
             return{
                 msg:'添加跟进记录',
                 clueId:'',
+                clueName:'',
 
                 ways: ["电话", "微信", "QQ", "邮箱"],
                 wayIndex: 0,
@@ -156,6 +159,7 @@
                 let currentPage = pages[pages.length-1]    //获取当前页面的对象
                 let url = currentPage.route    //当前页面url
                 this.clueId = currentPage.options.id      //上个页面带过来的参数
+                this.clueName = currentPage.options.name      //上个页面带过来的参数
                 // this.clueId = 2785
                 // console.log(this.clueId)
             },
@@ -168,7 +172,7 @@
                 month = (month < 10 ? "0" + month : month);
                 day = (day < 10 ? "0" + day : day);
                 this.startDate = year + '-' + month + '-' + day
-                this.InfoList.date = year + '-' + month + '-' + day
+                // this.InfoList.date = year + '-' + month + '-' + day
             },
             ChangeWay(e){
                 this.wayIndex = e.mp.detail.value
@@ -227,9 +231,9 @@
                                     icon: 'success',
                                     duration: 2000
                                 });
-                                // wx.navigateBack({
-                                //     delta: 1
-                                // })
+                                wx.navigateBack({
+                                    delta: 1
+                                })
                             }else{
                                 wx.showModal({
                                     content: res.data.msg,
@@ -249,10 +253,15 @@
     }
 </script>
 
-<style>
+<style scoped>
     .followadd{
         width: 100%;
-        padding-top: 100rpx;
+        /* padding-top: 100rpx; */
+    }
+    ._name{
+        line-height: 100rpx;
+        padding-left: 30rpx;
+        font-size: 30rpx;
     }
     .weui-cell,.weui-cells__title{
         font-size: 30rpx;

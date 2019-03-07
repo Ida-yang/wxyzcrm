@@ -4,7 +4,10 @@
         <div class="details">
             <div class="details_bd">
                 <div class="weui-media-box weui-media-box_text">
-                    <div class="weui-media-box__title weui-media-box__title_in-text">{{detailsList.name}}</div>
+                    <div class="weui-media-box__title weui-media-box__title_in-text">
+                        {{detailsList.name}}
+                        <i class="btn-update icon iconfont icon-xiugai" @click="toClueUpdate(detailsList)"></i>
+                    </div>
                     <div class="weui-media-box__desc">联系人姓名 &nbsp;&nbsp;{{decontactsList.coName || '无'}}</div>
                     <div class="weui-media-box__desc">联系人手机 &nbsp;&nbsp;{{decontactsList.phone || '无'}}</div>
                     <div class="weui-media-box__desc">详细地址 &nbsp;&nbsp;{{detailsList.address || '无'}}</div>
@@ -32,19 +35,6 @@
                                 <div class="weui-media-box__info__meta">{{item.createTime}}</div>
                             </div>
                         </div>
-                        <!-- <div class="detail-follow" v-for="item in followList" :key="item.id">
-                            <div class="weui-panel__hd">
-                                <div class="weui-form-preview__label">联系人</div>
-                                <div class="weui-form-preview__value">{{item.coName}}</div>
-                            </div>
-                            <div class="weui-panel__hd">
-                                <div class="weui-form-preview__label">时间</div>
-                                <div class="weui-form-preview__value">{{item.createTime}}</div>
-                            </div>
-                            <div class="weui-media-box">
-                                <div class="weui-media-box__desc">{{item.followContent}}</div>
-                            </div>
-                        </div> -->
 
                         <div style="height:80rpx;background-color:#fff;"></div>
 
@@ -54,7 +44,8 @@
                         </div>
 
                         <div class="btn-bottom">
-                            <button class="weui-btn btn-white btn-left" @click="toAddFollow">添加跟进记录</button>
+                            <button class="weui-btn btn-white btn-left" @click="toAddFollow">添加跟进</button>
+                            <button class="weui-btn btn-white btn-left" @click="toAddFollow">电话呼叫</button>
                             <div class="weui-cell weui-cell_access" @click="toJump">
                                 <view class="weui-cell__bd">更多</view>
                                 <view class="weui-cell__ft weui-cell__ft_in-access"></view>
@@ -91,7 +82,7 @@
                         </div>
                         <div class="weui-panel__hd detail-info">
                             <div class="weui-form-preview__label">未联系天数</div>
-                            <div class="weui-form-preview__value">{{detailsList.state || '无'}}</div>
+                            <div class="weui-form-preview__value">{{detailsList.dayNum}} 天</div>
                         </div>
                         <div class="weui-panel__hd detail-info">
                             <div class="weui-form-preview__label">创建时间</div>
@@ -227,7 +218,7 @@
             },
             toAddFollow(){
                 mpvue.navigateTo({
-                    url:'../cluefollowadd/main?id=' + this.optionId,
+                    url:'../cluefollowadd/main?id=' + this.optionId + '&name=' + this.detailsList.name,
                     success:function(res){
                         console.log(res)
                     }
@@ -310,6 +301,18 @@
                     }
                 })
             },
+            toClueUpdate(val){
+                console.log(val)
+                const coName = val.contacts[0].coName
+                const tel = val.contacts[0].telephone
+                const phone = val.contacts[0].phone
+                mpvue.navigateTo({
+                    url:'../clueupdate/main?id=' + val.id + '&cuesid=' + val.cuesid + '&cues=' + val.cues + '&name=' + val.name + '&coName=' + coName + '&tel=' + tel + '&phone=' + phone + '&address=' + val.address + '&remark=' + val.remark,
+                    success:function(res){
+                        console.log(res)
+                    }
+                })
+            },
         },
     }
 </script>
@@ -326,11 +329,11 @@
         background-color: #ffffff;
     }
     .btn-left{
-        width: 40%;
+        width: 30%;
         float: left;
     }
     .jump_content{
-        width: 60%;
+        width: 40%;
         position: fixed;
         bottom: 80rpx;
         right: 0;
@@ -347,5 +350,11 @@
     .weui-navbar__slider{
         background-color: #ff5722;
         border-bottom: 1rpx solid #ff5722
+    }
+    .btn-update{
+        position: absolute;
+        top: 20rpx;
+        right: 10rpx;
+        font-size: 50rpx
     }
 </style>

@@ -17,17 +17,31 @@
                     <img src="/static/images/user.png" class="btn-icon" />
                 </div>
             </header>
-            <div class="weui-cells weui-cells_after-title btn-screen" v-if="showScreens">
-                <radio-group @change="radioChange">
-                    <label class="weui-cell weui-check__label" v-for="item in screenList" :key="item.id">
-                        <radio class="weui-check" :value="item.id" :checked="item.checked"/>
-                        <div class="weui-cell__bd">{{item.name}}</div>
-                        <div class="weui-cell__ft weui-cell__ft_in-radio" v-if="item.checked">
-                            <icon class="weui-icon-radio" type="success_no_circle" size="16"></icon>
-                        </div>
-                    </label>
-                </radio-group>
+
+            <div class="screens" v-if="showScreens">
+                <view class="weui-cells__title">线索状态</view>
+                <view class="weui-cells weui-cells_after-title radio-group">
+                    <div class="btn-radio" v-for="item in stateList" :key="item.id">{{item.name}}</div>
+                </view>
+                <view class="weui-cells__title">线索来源</view>
+                <view class="weui-cells weui-cells_after-title radio-group">
+                    <div class="btn-radio" v-for="item in cueList" :key="item.id">{{item.name}}</div>
+                </view>
+                <view class="weui-cells__title">数据权限</view>
+                <view class="weui-cells weui-cells_after-title radio-group">
+                    <div class="btn-radio" v-for="item in pIdList" :key="item.id">{{item.name}}</div>
+                </view>
+                <view class="weui-cells__title">更新时间</view>
+                <view class="weui-cells weui-cells_after-title radio-group">
+                    <div class="btn-radio">状态</div>
+                    <div class="btn-radio">状态</div>
+                    <div class="btn-radio">状态</div>
+                    <div class="btn-radio">状态</div>
+                </view>
+                <!-- <button class="btn-cancer" type="default" @click="toAddClue">取消</button>
+                <button class="btn-custom" type="default" @click="toAddClue">确认</button> -->
             </div>
+            
             <div class="weui-panel__bd page-body">
                 <div class="weui-media-box weui-media-box_text" v-for="item in clueList" :key="item.id" @click="toClueDetails($event,item)">
                     <div class="weui-media-box__title weui-media-box__title_in-text">{{item.name}}</div>
@@ -35,6 +49,7 @@
                     <div class="weui-media-box__info">
                         <div class="weui-media-box__info__meta">负责人：{{item.privateUser[0].private_employee}}</div>
                         <div class="weui-media-box__info__meta weui-media-box__info__meta_extra">状态：{{item.state}}</div>
+                        <div class="weui-media-box__info__meta weui-media-box__info__meta_extra">未联系天数：{{item.dayNum}} 天</div>
                     </div>
                 </div>
                 <div class="weui-footer page-footer" v-if="noMore">
@@ -57,15 +72,24 @@
                 msg:'线索详情',
                 iconShowed: false,
                 inputVal: "",
+
                 showScreens:false,
-                screenList:[
-                    {id:'1',name:'未联系',checked:true},
-                    {id:'2',name:'不想联系',checked:false},
-                    {id:'3',name:'要去联系',checked:false},
-                    {id:'4',name:'不能联系',checked:false},
-                    {id:'5',name:'联系了',checked:false},
-                    {id:'6',name:'还联系吗',checked:false},
+                stateList:[
+                    {id:'1',name:'未联系'},
+                    {id:'2',name:'不想联系'},
+                    {id:'3',name:'要去联系'},
+                    {id:'4',name:'不能联系'},
+                    {id:'5',name:'联系了'},
+                    {id:'6',name:'还联系吗'},
                 ],
+                cueList:[],
+                pIdList:[
+                    {id:'1',name:'全部线索'},
+                    {id:'2',name:'我的线索'},
+                    {id:'3',name:'本组线索'},
+                    {id:'4',name:'本机构线索'},
+                ],
+                
                 clueList: [],
                 page: 1,
                 limit: 15,
@@ -151,21 +175,6 @@
                     this.showScreens = false
                 }
             },
-            radioChange(e) {
-                // console.log('radio发生change事件，携带value值为：', e.mp.detail.value);
-
-                var screenList = this.screenList;
-                for (var i = 0, len = screenList.length; i < len; i++) {
-                    if(i == e.mp.detail.value - 1){
-                        screenList[i].checked = true;
-                    }else{
-                        screenList[i].checked = false;
-                    }
-                    
-                }
-
-                this.screenList = screenList
-            },
             toClueDetails(e,val){
                 // console.log(val)
                 mpvue.navigateTo({
@@ -176,6 +185,9 @@
                 })
             },
             toAddClue(){
+                // wx.makePhoneCall({
+                //     phoneNumber: '1340000' //仅为示例，并非真实的电话号码
+                // })
                 mpvue.navigateTo({
                     url:'../clueadd/main',
                     success:function(res){
@@ -199,8 +211,37 @@
         width: 50rpx;
         height: 50rpx;
     }
-    .btn-screen{
+    .screens{
+        width: 80%;
         font-size: 26rpx;
+        position: fixed;
+        right: 0;
+        background-color: #f0f0f0;
+        z-index: 9999;
+        border-left: 1rpx solid #cccccc
+    }
+    .weui-cells__title{
+        line-height: 50rpx;
+        margin: 0
+    }
+    .radio-group{
+        display: flex;
+        flex-wrap: wrap;
+        padding-bottom: 10rpx;
+    }
+    .btn-radio{
+        /* width:  */
+        flex: 0 0 30%;
+        text-align: center;
+        border: 1rpx solid #cccccc;
+        border-radius: 10rpx;
+        font-size: 28rpx;
+        padding: 6rpx 0;
+        margin-top: 10rpx;
+        margin-left: 10rpx;
+    }
+    .btn-cancer{
+        width: 40%;
     }
     .page-body{
         margin-bottom: 80rpx;

@@ -1,6 +1,7 @@
 
 <script>
 import config from './config'
+import iconfont from '../static/iconfont/iconfont.css'
 export default {
   created () {
     // wx.request({
@@ -98,6 +99,40 @@ export default {
   }
   .detail-info{
     background-color: #ffffff;
+  }
+  /* 表格 */
+  .table {
+    color: #2d2d2d;
+  }
+  .tr {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    height: 60rpx;
+    align-items: center;
+  }
+  
+  .th,.td {
+    width: 40%;
+    height: 60rpx;
+    line-height: 60rpx;
+  }
+  .th{
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    /* border-top: 1rpx solid darkgray; */
+  }
+  .td {
+    text-align: center;
+    border-right: 1rpx solid darkgray;
+    border-bottom: 1rpx solid darkgray;
+  }
+  .td:first-child{
+    border-left: 1rpx solid darkgray;
+    font-weight: bold;
   }
   .weui-btn{
     font-size: 34rpx;

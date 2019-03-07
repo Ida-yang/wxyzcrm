@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- <h1>{{msg}}</h1> -->
-        <div class="clueadd">
+        <div class="clueupdate">
             <div class="page__bd">
                 
                 <div class="weui-cells weui-cells_after-title">
@@ -24,7 +24,7 @@
                             <div class="weui-label">公司名称<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.poolname" @input="inputval" />
+                            <input class="weui-input" v-model="InfoList.poolname" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -32,7 +32,7 @@
                             <div class="weui-label">联系人<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.coName" @input="inputval" />
+                            <input class="weui-input" v-model="InfoList.coName" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -40,7 +40,7 @@
                             <div class="weui-label">电话<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.telphone" @input="inputval" />
+                            <input class="weui-input" v-model="InfoList.telphone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -48,7 +48,7 @@
                             <div class="weui-label">手机</div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.phone" @input="inputval" />
+                            <input class="weui-input" v-model="InfoList.phone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -56,7 +56,7 @@
                             <div class="weui-label">地址</div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.address" @input="inputval" />
+                            <input class="weui-input" v-model="InfoList.address" @input="inputval" />
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                 <div class="weui-cells weui-cells_after-title">
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <textarea class="weui-textarea" :value="InfoList.remark" style="height: 5.3em; line-height: 1.5em" @input="inputval" />
+                            <textarea class="weui-textarea" v-model="InfoList.remark" style="height: 5.3em; line-height: 1.5em" @input="inputval" />
                             <div class="weui-textarea-counter">0/200</div>
                         </div>
                     </div>
@@ -87,13 +87,14 @@
     export default {
         data(){
             return{
-                msg:'线索新增',
+                msg:'线索修改',
 
                 cues: [],
                 cueId: [],
                 cueIndex: 0,
 
                 InfoList:{
+                    id:'',
                     cueid:'',
                     poolname:'',
                     coName:'',
@@ -101,13 +102,34 @@
                     phone:'',
                     address:'',
                     remark:'',
-                }
+                    cuename:''
+                },
+                cuesid:null,
+                cuename:null,
             }
         },
         mounted(){
+            this.getItems()
             this.loaddata()
         },
         methods:{
+            //获取URL数据
+            getItems(){
+                let pages = getCurrentPages()    //获取加载的页面
+                let currentPage = pages[pages.length-1]    //获取当前页面的对象
+                let url = currentPage.route    //当前页面url
+                console.log(currentPage.options)
+                this.InfoList.id = currentPage.options.id      //上个页面带过来的参数
+                this.InfoList.poolname = currentPage.options.name      //上个页面带过来的参数
+                this.InfoList.coName = currentPage.options.coName      //上个页面带过来的参数
+                this.InfoList.telphone = currentPage.options.tel      //上个页面带过来的参数
+                this.InfoList.phone = currentPage.options.phone      //上个页面带过来的参数
+                this.InfoList.address = currentPage.options.address      //上个页面带过来的参数
+                this.InfoList.remark = currentPage.options.remark      //上个页面带过来的参数
+                this.InfoList.cueid = currentPage.options.cuesid      //上个页面带过来的参数
+                this.InfoList.cuename = currentPage.options.cues      //上个页面带过来的参数
+                // console.log(this.id,this.name,this.coName,this.telphone,this.phone,this.address,this.remark)
+            },
             loaddata(){
                 const _this = this
                 wx.request({
@@ -146,9 +168,6 @@
                 }else if(e.currentTarget.dataset.eventid == '6'){
                     this.InfoList.remark = e.mp.detail.value
                 }
-            },
-            inputName(e){
-                console.log(e.mp.detail.value)
             },
             addClick(){
                 console.log(this.InfoList)
@@ -196,54 +215,54 @@
                 });
                 
                 if(flag){
-                    const _this = this
-                    wx.request({
-                        method: 'post',
-                        url: config.host + 'customerTwo/saveClue.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
-                        data: {
-                            cuesid: _this.InfoList.cueid,
-                            poolName: _this.InfoList.poolname,
-                            contactsName: _this.InfoList.coName,
-                            telphone: _this.InfoList.telphone,
-                            phone: _this.InfoList.phone,
-                            address: _this.InfoList.address,
-                            remark: _this.InfoList.remark,
-                        },
-                        header:{
-                            "Content-Type": "application/x-www-form-urlencoded"
-                        },
-                        success:function(res) {
-                            console.log(res)
-                            if(res.data.code && res.data.code == '200'){
-                                wx.showToast({
-                                    title: '已完成',
-                                    icon: 'success',
-                                    duration: 2000
-                                });
-                                wx.navigateBack({
-                                    delta: 1
-                                })
-                            }else{
-                                wx.showModal({
-                                    content: res.data.msg,
-                                    showCancel: false,
-                                    success(res) {
-                                        if (res.confirm) {
-                                            console.log('用户点击确定')
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    })
+                    // const _this = this
+                    // wx.request({
+                    //     method: 'post',
+                    //     url: config.host + 'customerTwo/saveClue.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
+                    //     data: {
+                    //         cuesid: _this.InfoList.cueid,
+                    //         poolName: _this.InfoList.poolname,
+                    //         contactsName: _this.InfoList.coName,
+                    //         telphone: _this.InfoList.telphone,
+                    //         phone: _this.InfoList.phone,
+                    //         address: _this.InfoList.address,
+                    //         remark: _this.InfoList.remark,
+                    //     },
+                    //     header:{
+                    //         "Content-Type": "application/x-www-form-urlencoded"
+                    //     },
+                    //     success:function(res) {
+                    //         console.log(res)
+                    //         if(res.data.code && res.data.code == '200'){
+                    //             wx.showToast({
+                    //                 title: '已完成',
+                    //                 icon: 'success',
+                    //                 duration: 2000
+                    //             });
+                    //             wx.navigateBack({
+                    //                 delta: 1
+                    //             })
+                    //         }else{
+                    //             wx.showModal({
+                    //                 content: res.data.msg,
+                    //                 showCancel: false,
+                    //                 success(res) {
+                    //                     if (res.confirm) {
+                    //                         console.log('用户点击确定')
+                    //                     }
+                    //                 }
+                    //             });
+                    //         }
+                    //     }
+                    // })
                 }
             },
-        }
+        },
     }
 </script>
 
-<style scoped>
-    .clueadd{
+<style>
+    .clueupdate{
         width: 100%;
         padding-top: 100rpx;
     }
@@ -268,4 +287,5 @@
     .__text{
         color: red;
     }
+
 </style>
