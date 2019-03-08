@@ -45,7 +45,7 @@
 
                         <div class="btn-bottom">
                             <button class="weui-btn btn-white btn-left" @click="toAddFollow">添加跟进</button>
-                            <button class="weui-btn btn-white btn-left" @click="toAddFollow">电话呼叫</button>
+                            <button class="weui-btn btn-white btn-left" @click="toteleCall">电话呼叫</button>
                             <div class="weui-cell weui-cell_access" @click="toJump">
                                 <view class="weui-cell__bd">更多</view>
                                 <view class="weui-cell__ft weui-cell__ft_in-access"></view>
@@ -60,8 +60,8 @@
                                 <div class="weui-form-preview__value">{{item.name || '无'}}</div>
                             </div>
                             <div class="weui-panel__hd">
-                                <div class="weui-form-preview__label">电话</div>
-                                <div class="weui-form-preview__value">{{item.telphone || '无'}}</div>
+                                <div class="weui-form-preview__label">手机</div>
+                                <div class="weui-form-preview__value">{{item.phone || '无'}}</div>
                             </div>
                         </div>
                         <div style="height:80rpx;background-color:#fff;"></div>
@@ -224,6 +224,19 @@
                     }
                 })
             },
+            toteleCall(){
+                let phoneNum = this.decontactsList.phone
+                if(phoneNum){
+                    wx.makePhoneCall({
+                        phoneNumber: phoneNum //仅为示例，并非真实的电话号码
+                    })
+                }else{
+                    wx.showModal({
+                        content: '无法呼叫，请添加手机号码',
+                        showCancel: false,
+                    });
+                }
+            },
             //打开更多操作
             toJump(){
                 this.showJump = !this.showJump
@@ -303,11 +316,33 @@
             },
             toClueUpdate(val){
                 console.log(val)
-                const coName = val.contacts[0].coName
-                const tel = val.contacts[0].telephone
-                const phone = val.contacts[0].phone
+                let contacts = val.contacts[0]
+                let csId = ''
+                let coName = ''
+                let tel = ''
+                let phone = ''
+                let remark = ''
+                let address = ''
+                if(contacts.csId){
+                    csId = contacts.csId
+                }
+                if(contacts.coName){
+                    coName = contacts.coName
+                }
+                if(contacts.telephone){
+                    tel = contacts.telephone
+                }
+                if(contacts.phone){
+                    phone = contacts.phone
+                }
+                if(val.address){
+                    address = val.address
+                }
+                if(val.remark){
+                    remark = val.remark
+                }
                 mpvue.navigateTo({
-                    url:'../clueupdate/main?id=' + val.id + '&cuesid=' + val.cuesid + '&cues=' + val.cues + '&name=' + val.name + '&coName=' + coName + '&tel=' + tel + '&phone=' + phone + '&address=' + val.address + '&remark=' + val.remark,
+                    url:'../clueupdate/main?id=' + val.id + '&cuesid=' + val.cuesid + '&name=' + val.name + '&csId=' + csId + '&coName=' + coName + '&tel=' + tel + '&phone=' + phone + '&address=' + address + '&remark=' + remark,
                     success:function(res){
                         console.log(res)
                     }

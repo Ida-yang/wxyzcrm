@@ -37,18 +37,18 @@
                     </div>
                     <div class="weui-cell weui-cell_input">
                         <div class="weui-cell__hd">
-                            <div class="weui-label">电话<text class="__text"> * </text></div>
+                            <div class="weui-label">手机<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.telphone" @input="inputval" />
+                            <input class="weui-input" :value="InfoList.phone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
                         <div class="weui-cell__hd">
-                            <div class="weui-label">手机</div>
+                            <div class="weui-label">电话</div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.phone" @input="inputval" />
+                            <input class="weui-input" :value="InfoList.telphone" @input="inputval" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -128,8 +128,9 @@
                 })
             },
             cueChange(e){
-                // console.log('picker country 发生选择改变，携带值为', e.mp.detail.value);
+                console.log('picker country 发生选择改变，携带值为', e.mp.detail.value);
                 this.cueIndex = e.mp.detail.value
+                this.InfoList.cueid = this.cueId[this.cueIndex]
             },
             inputval(e){
                 // console.log(e.currentTarget.dataset.eventid)
@@ -138,9 +139,9 @@
                 }else if(e.currentTarget.dataset.eventid == '2'){
                     this.InfoList.coName = e.mp.detail.value
                 }else if(e.currentTarget.dataset.eventid == '3'){
-                    this.InfoList.telphone = e.mp.detail.value
-                }else if(e.currentTarget.dataset.eventid == '4'){
                     this.InfoList.phone = e.mp.detail.value
+                }else if(e.currentTarget.dataset.eventid == '4'){
+                    this.InfoList.telphone = e.mp.detail.value
                 }else if(e.currentTarget.dataset.eventid == '5'){
                     this.InfoList.address = e.mp.detail.value
                 }else if(e.currentTarget.dataset.eventid == '6'){
@@ -151,49 +152,46 @@
                 console.log(e.mp.detail.value)
             },
             addClick(){
-                console.log(this.InfoList)
-                let InfoList = [this.InfoList]
+                // console.log(this.InfoList)
+                let InfoList = this.InfoList
                 // console.log(InfoList)
                 let flag = true
-                InfoList.forEach(el => {
-                    // console.log(el.poolname)
-                    if(!el.poolname){
-                        wx.showModal({
-                            content: '请填写公司名称再提交',
-                            showCancel: false,
-                            success(res) {
-                                if (res.confirm) {
-                                    console.log('用户点击确定')
-                                }
+                if(!InfoList.poolname){
+                    wx.showModal({
+                        content: '请填写公司名称再提交',
+                        showCancel: false,
+                        success(res) {
+                            if (res.confirm) {
+                                console.log('用户点击确定')
                             }
-                        });
-                        return flag = false
-                    }
-                    if(!el.coName){
-                        wx.showModal({
-                            content: '请填写联系人再提交',
-                            showCancel: false,
-                            success(res) {
-                                if (res.confirm) {
-                                    console.log('用户点击确定')
-                                }
+                        }
+                    });
+                    return flag = false
+                }
+                if(!InfoList.coName){
+                    wx.showModal({
+                        content: '请填写联系人再提交',
+                        showCancel: false,
+                        success(res) {
+                            if (res.confirm) {
+                                console.log('用户点击确定')
                             }
-                        });
-                        return flag = false
-                    }
-                    if(!el.telphone){
-                        wx.showModal({
-                            content: '请填写电话再提交',
-                            showCancel: false,
-                            success(res) {
-                                if (res.confirm) {
-                                    console.log('用户点击确定')
-                                }
+                        }
+                    });
+                    return flag = false
+                }
+                if(!InfoList.phone){
+                    wx.showModal({
+                        content: '请填写手机号码再提交',
+                        showCancel: false,
+                        success(res) {
+                            if (res.confirm) {
+                                console.log('用户点击确定')
                             }
-                        });
-                        return flag = false
-                    }
-                });
+                        }
+                    });
+                    return flag = false
+                }
                 
                 if(flag){
                     const _this = this
@@ -201,6 +199,8 @@
                         method: 'post',
                         url: config.host + 'customerTwo/saveClue.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
                         data: {
+                            secondid: '64',
+                            deptid: '2',
                             cuesid: _this.InfoList.cueid,
                             poolName: _this.InfoList.poolname,
                             contactsName: _this.InfoList.coName,

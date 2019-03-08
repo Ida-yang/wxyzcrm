@@ -74,7 +74,7 @@
                 </picker>
             </div>
             <div class="home-funnel">
-                <ec-canvas class="canvas" id="mychart-dom-bar" canvas-id="mychart-bar" :ec="ec"></ec-canvas>
+                <ec-canvas class="canvas" id="mychart-dom-bar" canvas-id="mychart-bar" v-model="ec" :ec="ec"></ec-canvas>
             </div>
             <div class="home-table">
                 <div class="table">
@@ -146,53 +146,11 @@
                 endDate: '',
 
                 listData:[],
+                listhead:[],
 
                 amountList:{},
 
                 ec: {// 传 options
-                    options: {
-                        title: {
-                            text: '商机漏斗',
-                            left: 10,
-                            top: 10,
-                            textStyle: {　//标题的文字样式
-                                fontSize: 15
-                            }
-                        },
-                        tooltip: {
-                            trigger: 'item',
-                            formatter: "{b}\n{a}：{c}"
-                        },
-                        legend: {
-                            data: ['初步了解','拜访','需求确认','商务谈判','成功签约','失败关闭'],
-                            bottom: 30
-                        },
-                        calculable: true,
-                        series: [
-                            {
-                                name:'数量',
-                                type:'funnel',
-                                left: '10%',
-                                top: 60,
-                                bottom: 100,
-                                width: '80%',
-                                minSize: '5%',
-                                sort: 'none',
-                                // gap: 2,
-                                label: {
-                                    show: true,
-                                    position: 'inside'
-                                },
-                                emphasis: {
-                                    label: {
-                                        fontSize: 14
-                                    }
-                                },
-                                data: []
-                            }
-                        ]
-                    },
-                    
                 },
 
                 tempFilePaths: '',
@@ -200,7 +158,8 @@
             }
         },
         components: {
-            card
+            card,
+            echarts
         },
         onShow(){
             this.getDate()
@@ -210,8 +169,9 @@
             this.loadData()
             wx.stopPullDownRefresh()
         },
+        
         methods: {
-            loadData(){
+            async loadData(){
                 const _this = this
                 wx.request({
                     method: 'get',
@@ -232,8 +192,15 @@
                     },
                     success:function(res) {
                         // console.log(res.data)
-                        _this.ec.options.series[0].data = res.data
+                        // _this.ec.options.series[0].data = res.data
                         _this.listData = res.data
+                        res.data.forEach(el => {
+                            if(el.name){
+                                // console.log(el.name)
+                                _this.listhead.push(el.name)
+                            }
+                        });
+                        _this.initChart()
                     }
                 })
             },
@@ -246,6 +213,58 @@
                 this.date = year + '-' + month
                 // console.log(year + '-' + month)
             },
+            initChart(canvas, width, height) {
+                const chart = echarts.init(canvas, null, {
+                    width: width,
+                    height: height
+                });
+                canvas.setChart(chart);
+
+                var option = {
+                    title: {
+                        text: '商机漏斗',
+                        left: 10,
+                        top: 10,
+                        textStyle: {　//标题的文字样式
+                            fontSize: 15
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}\n{a}：{c}"
+                    },
+                    legend: {
+                        data: this.listhead,
+                        bottom: 30
+                    },
+                    calculable: true,
+                    series: [
+                        {
+                            name:'数量',
+                            type:'funnel',
+                            left: '10%',
+                            top: 60,
+                            bottom: 100,
+                            width: '80%',
+                            minSize: '5%',
+                            sort: 'none',
+                            // gap: 2,
+                            label: {
+                                show: true,
+                                position: 'inside'
+                            },
+                            emphasis: {
+                                label: {
+                                    fontSize: 14
+                                }
+                            },
+                            data: this.listData
+                        }
+                    ]
+                }
+                chart.setOption(option);
+                return chart
+            },
             bindViewTap () {
                 const url = '../logs/main'
                 if (mpvuePlatform === 'wx') {
@@ -255,8 +274,10 @@
                 }
             },
             search(e) {
+                const _this = this
                 // console.log(e.mp.detail.value)
                 this.date = e.mp.detail.value
+                this.loadData()
             },
             chooseImg(){
                 const _this = this

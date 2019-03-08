@@ -212,8 +212,8 @@
                         url: config.host + 'addFollow.do?cId=' + '201901973891' + '&pId=' + '93',  //接口地址
                         data: {
                             customertwo_id: _this.clueId,
-                            deptid: 61,
-                            secondid:2,
+                            deptid: '2',
+                            secondid: '64',
                             followType: _this.InfoList.way,
                             contactTime: _this.InfoList.date,
                             followContent: _this.InfoList.followcon,
