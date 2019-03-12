@@ -24,7 +24,7 @@
                             <div class="weui-label">公司名称<text class="__text"> * </text></div>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" :value="InfoList.poolname" @input="inputval" />
+                            <input class="weui-input" :value="InfoList.poolname" @input="inputval" @change="searchNames" />
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_input">
@@ -149,7 +149,32 @@
                 }
             },
             inputName(e){
+                this.InfoList.poolname = e.mp.detail.value
+            },
+            searchNames(e){
                 console.log(e.mp.detail.value)
+                let val = e.mp.detail.value
+                wx.request({
+                    method:'post',
+                    url: config.host + 'customerTwo/checkName.do?cId=' +'201901973891',  //接口地址
+                    data: {
+                        name: val
+                    },
+                    header:{
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    success: function (res) {
+                        console.log(res.data)
+                        if(!res.data.code || res.data.code !== "200"){
+                            wx.showModal({
+                                content: '该公司已经存在',
+                                showCancel: false,
+                            });
+                        }else{
+                            return
+                        }
+                    }
+                })
             },
             addClick(){
                 // console.log(this.InfoList)

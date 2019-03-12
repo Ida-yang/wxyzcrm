@@ -13,33 +13,29 @@
                     </div>
                 </div>
                 <div class="weui-search-bar__cancel-btn" @click="search">搜索</div>
-                <div class="weui-search-bar__cancel-btn" @click="showScreen">
-                    <img src="/static/images/user.png" class="btn-icon" />
+                <div class="weui-search-bar__cancel-btn btn-icon" @click="showScreen">
+                    <i class="icon iconfont icon-add"></i>
                 </div>
             </header>
 
             <div class="screens" v-if="showScreens">
-                <view class="weui-cells__title">线索状态</view>
+                <view class="weui-cells__title clue_title">线索状态</view>
                 <view class="weui-cells weui-cells_after-title radio-group">
-                    <div class="btn-radio" v-for="item in stateList" :key="item.id">{{item.name}}</div>
+                    <div class="btn_radio" :class="[index == stateActive ? 'isActive':'']" v-for="(item,index) in stateList" :key="item.id" @click="checkstate(item,index)">{{item.typeName}}</div>
                 </view>
-                <view class="weui-cells__title">线索来源</view>
+                <view class="weui-cells__title clue_title">线索来源</view>
                 <view class="weui-cells weui-cells_after-title radio-group">
-                    <div class="btn-radio" v-for="item in cueList" :key="item.id">{{item.name}}</div>
+                    <div class="btn_radio" :class="[index == cueActive ? 'isActive':'']" v-for="(item,index) in cueList" :key="item.id" @click="checkcue(item,index)">{{item.typeName}}</div>
                 </view>
-                <view class="weui-cells__title">数据权限</view>
+                <view class="weui-cells__title clue_title">数据权限</view>
                 <view class="weui-cells weui-cells_after-title radio-group">
-                    <div class="btn-radio" v-for="item in pIdList" :key="item.id">{{item.name}}</div>
+                    <div class="btn_radio" :class="[index == pIdActive ? 'isActive':'']" v-for="(item,index) in pIdList" :key="item.id" @click="checkpId(item,index)">{{item.name}}</div>
                 </view>
-                <view class="weui-cells__title">更新时间</view>
+                <view class="weui-cells__title clue_title">更新时间</view>
                 <view class="weui-cells weui-cells_after-title radio-group">
-                    <div class="btn-radio">状态</div>
-                    <div class="btn-radio">状态</div>
-                    <div class="btn-radio">状态</div>
-                    <div class="btn-radio">状态</div>
+                    <div class="btn_radio" :class="[index == dateActive ? 'isActive':'']" v-for="(item,index) in dateList" :key="item.id" @click="checkdate(item,index)">{{item.name}}</div>
                 </view>
-                <!-- <button class="btn-cancer" type="default" @click="toAddClue">取消</button>
-                <button class="btn-custom" type="default" @click="toAddClue">确认</button> -->
+                <button class="btn-reset bl" @click="checkreset">重置</button>
             </div>
             
             <div class="weui-panel__bd page-body">
@@ -71,24 +67,38 @@
             return{
                 msg:'线索详情',
                 iconShowed: false,
-                inputVal: "",
+                searchList:{
+                    inputVal: '',
+                    stateid:'',
+                    cuesid:'',
+                    pId: '93',
+                    secondid:'',
+                    deptid:'',
+                    date:''
+                },
 
                 showScreens:false,
-                stateList:[
-                    {id:'1',name:'未联系'},
-                    {id:'2',name:'不想联系'},
-                    {id:'3',name:'要去联系'},
-                    {id:'4',name:'不能联系'},
-                    {id:'5',name:'联系了'},
-                    {id:'6',name:'还联系吗'},
-                ],
+                stateList:[],
+                stateActive: '-1',
+                
                 cueList:[],
+                cueActive: '-1',
+
                 pIdList:[
-                    {id:'1',name:'全部线索'},
-                    {id:'2',name:'我的线索'},
-                    {id:'3',name:'本组线索'},
-                    {id:'4',name:'本机构线索'},
+                    {id:'11',name:'全部线索'},
+                    {id:'12',name:'我的线索'},
+                    {id:'13',name:'本组线索'},
+                    {id:'14',name:'本机构线索'},
                 ],
+                pIdActive: '1',
+
+                dateList:[
+                    {id:'1',name:'昨天'},
+                    {id:'2',name:'今天'},
+                    {id:'3',name:'本周'},
+                    {id:'4',name:'本月'}
+                ],
+                dateActive: '-1',
                 
                 clueList: [],
                 page: 1,
@@ -117,22 +127,27 @@
             this.noMore = false
             this.page = 1
             this.loadData()
+            this.getSearchList()
         },
         methods:{
             async loadData(){
                 const _this = this
-                // if(this.init !== true){
-                //     this.page = this.page + 1
-                // }
+
                 wx.request({
-                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891' + '&pId=' + '93',  //接口地址
+                    url: config.host + 'customerTwo/query.do?cId=' +'201901973891',  //接口地址
                     data: {
                         page: _this.page,
                         limit: _this.limit,
-                        searchName: _this.inputVal
+                        searchName: _this.searchList.inputVal,
+                        stateid: _this.searchList.stateid,
+                        cuesid: _this.searchList.cuesid,
+                        pId: _this.searchList.pId,
+                        secondid: _this.searchList.secondid,
+                        deptid: _this.searchList.deptid,
+                        example: _this.searchList.date
                     },
                     success:function(res) {
-                        console.log(res.data.map.success)
+                        // console.log(res.data.map.success)
                         let cluedata = res.data.map.success
                         if(_this.init == true){
                             _this.clueList = cluedata
@@ -150,6 +165,72 @@
                         }
                     }
                 })
+            },
+            getSearchList(){
+                const _this = this
+
+                wx.request({
+                    url: config.host + 'typeInfo/getTypeInfoByType.do?cId=' +'201901973891',  //接口地址
+                    success:function(res) {
+                        // console.log(res.data)
+                        _this.stateList = res.data.name1001
+                        _this.cueList = res.data.name3001
+                    }
+                })
+            },
+            checkstate(item,index){
+                this.stateActive = index
+                this.searchList.stateid = item.id
+                this.init = true
+                this.noMore = false
+                this.page = 1
+                this.loadData()
+            },
+            checkcue(item,index){
+                this.cueActive = index
+                this.searchList.cuesid = item.id
+                this.init = true
+                this.noMore = false
+                this.page = 1
+                this.loadData()
+            },
+            checkpId(item,index){
+                this.pIdActive = index
+                if(item.id == 11){
+                    this.searchList.pId = ''
+                }else if(item.id == 12){
+                    this.searchList.pId = '93'
+                }else if(item.id == 13){
+                    this.searchList.secondid = '64'
+                }else if(item.id == 14){
+                    this.searchList.deptid = '2'
+                } 
+                this.init = true
+                this.noMore = false
+                this.page = 1
+                this.loadData()
+            },
+            checkdate(item,index){
+                this.dateActive = index
+                this.searchList.date = item.id
+                this.init = true
+                this.noMore = false
+                this.page = 1
+                this.loadData()
+            },
+            checkCancer(){
+                this.showScreens = false
+            },
+            checkreset(){
+                this.searchList = {inputVal: '',stateid:'',cuesid:'',pId: '93',secondid:'',deptid:'',date:''}
+                this.stateActive = '-1'
+                this.cueActive = '-1'
+                this.pIdActive = '1'
+                this.dateActive = '-1'
+                this.init = true
+                this.noMore = false
+                this.page = 1
+                this.loadData()
             },
             clearInput() {
                 this.inputVal = ""
@@ -207,38 +288,47 @@
     .btn-icon{
         width: 50rpx;
         height: 50rpx;
+        color: black
     }
     .screens{
         width: 80%;
+        height: 100%;
         font-size: 26rpx;
         position: fixed;
         right: 0;
         background-color: #f0f0f0;
         z-index: 9999;
-        border-left: 1rpx solid #cccccc
+        border-left: 1rpx solid #dddddd
     }
-    .weui-cells__title{
-        line-height: 50rpx;
+    .clue_title{
+        line-height: 60rpx;
+        font-size: 30rpx;
         margin: 0
     }
     .radio-group{
         display: flex;
         flex-wrap: wrap;
-        padding-bottom: 10rpx;
+        padding-top: 20rpx;
     }
-    .btn-radio{
+    .btn_radio{
         /* width:  */
         flex: 0 0 30%;
         text-align: center;
         border: 1rpx solid #cccccc;
         border-radius: 10rpx;
-        font-size: 28rpx;
-        padding: 6rpx 0;
-        margin-top: 10rpx;
-        margin-left: 10rpx;
+        font-size: 30rpx;
+        padding: 8rpx 0;
+        margin-bottom: 20rpx;
+        margin-left: 2%;
     }
-    .btn-cancer{
-        width: 40%;
+    .isActive{
+        color: #ff5722;
+        border: 1rpx solid #ff5722;
+    }
+    .btn-reset{
+        line-height: 60rpx;
+        font-size: 34rpx;
+        margin-top: 60rpx;
     }
     .page-body{
         margin-bottom: 80rpx;

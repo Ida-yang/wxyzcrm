@@ -68,13 +68,13 @@
                 <picker mode="date" :value="date" fields="month" start="2000-01" :end="endDate" @change="search">
                     <div class="picker-btn">
                         {{date}}
-                        <icon type="success_no_circle" size="10"></icon>
+                        <i type="icon iconfont icon-xiala-" style="float:right"></i>
                     </div>
                     <div class="picker-line"></div>
                 </picker>
             </div>
             <div class="home-funnel">
-                <ec-canvas class="canvas" id="mychart-dom-bar" canvas-id="mychart-bar" v-model="ec" :ec="ec"></ec-canvas>
+                <mpvue-echarts :echarts="echarts" :onInit="onInit" canvasId="demo-canvas" />
             </div>
             <div class="home-table">
                 <div class="table">
@@ -131,7 +131,67 @@
 
 <script>
     import card from '@/components/card'
+    import echarts from '../../../static/echarts.min.js'
+    import mpvueEcharts from 'mpvue-echarts'
     import config from '../../config'
+
+        let chart = null
+        let option = { //ECharts 配置项
+            title: {
+                text: '商机漏斗',
+                left: 10,
+                top: 10,
+                textStyle: {　//标题的文字样式
+                    fontSize: 15
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}\n{a}：{c}"
+            },
+            legend: {
+                data: ['加载失败'],
+                bottom: 30
+            },
+            calculable: true,
+            series: [
+                {
+                    name:'数量',
+                    type:'funnel',
+                    left: '10%',
+                    top: 60,
+                    bottom: 100,
+                    width: '80%',
+                    minSize: '5%',
+                    sort: 'none',
+                    // gap: 2,
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    emphasis: {
+                        label: {
+                            fontSize: 14
+                        }
+                    },
+                    data: [{name:'加载失败'}]
+                }
+            ]
+        }
+        
+        function initChart(canvas, width, height) {
+            chart = echarts.init(canvas, null, {
+                width: width,
+                height: height
+            });
+            canvas.setChart(chart);
+
+            chart.setOption(option,true);
+            
+            // console.log(this.next,'333333333')
+
+            return chart; // 返回 chart 后可以自动绑定触摸操作
+        }
 
     export default {
         data(){
@@ -150,8 +210,9 @@
 
                 amountList:{},
 
-                ec: {// 传 options
-                },
+                echarts,
+                onInit: initChart,
+                next:false,
 
                 tempFilePaths: '',
                 chooseimage: false
@@ -159,11 +220,11 @@
         },
         components: {
             card,
-            echarts
+            mpvueEcharts
         },
         onShow(){
             this.getDate()
-            this.loadData()
+            this.next = false
         },
         onPullDownRefresh(){
             this.loadData()
@@ -171,7 +232,7 @@
         },
         
         methods: {
-            async loadData(){
+            loadData(){
                 const _this = this
                 wx.request({
                     method: 'get',
@@ -192,17 +253,23 @@
                     },
                     success:function(res) {
                         // console.log(res.data)
-                        // _this.ec.options.series[0].data = res.data
+                        option.series[0].data = res.data
                         _this.listData = res.data
+                        // console.log(option.series[0].data)
+                        option.legend.data = ['']
                         res.data.forEach(el => {
                             if(el.name){
-                                // console.log(el.name)
-                                _this.listhead.push(el.name)
+                                option.legend.data.push(el.name)
                             }
                         });
-                        _this.initChart()
+                        // console.log(option)
+                        // console.log(_this.next,'11111')
+                        if(_this.next == true){
+                            _this.reload()
+                        }
                     }
                 })
+                
             },
             getDate(){
                 let date = new Date;
@@ -212,58 +279,7 @@
                 this.endDate = year + '-' + month
                 this.date = year + '-' + month
                 // console.log(year + '-' + month)
-            },
-            initChart(canvas, width, height) {
-                const chart = echarts.init(canvas, null, {
-                    width: width,
-                    height: height
-                });
-                canvas.setChart(chart);
-
-                var option = {
-                    title: {
-                        text: '商机漏斗',
-                        left: 10,
-                        top: 10,
-                        textStyle: {　//标题的文字样式
-                            fontSize: 15
-                        }
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{b}\n{a}：{c}"
-                    },
-                    legend: {
-                        data: this.listhead,
-                        bottom: 30
-                    },
-                    calculable: true,
-                    series: [
-                        {
-                            name:'数量',
-                            type:'funnel',
-                            left: '10%',
-                            top: 60,
-                            bottom: 100,
-                            width: '80%',
-                            minSize: '5%',
-                            sort: 'none',
-                            // gap: 2,
-                            label: {
-                                show: true,
-                                position: 'inside'
-                            },
-                            emphasis: {
-                                label: {
-                                    fontSize: 14
-                                }
-                            },
-                            data: this.listData
-                        }
-                    ]
-                }
-                chart.setOption(option);
-                return chart
+                this.loadData()
             },
             bindViewTap () {
                 const url = '../logs/main'
@@ -275,9 +291,13 @@
             },
             search(e) {
                 const _this = this
-                // console.log(e.mp.detail.value)
+                this.next = true
                 this.date = e.mp.detail.value
                 this.loadData()
+            },
+            reload(){
+                chart.setOption(option,true);
+                // console.log(this.next,'22222222')
             },
             chooseImg(){
                 const _this = this
@@ -286,7 +306,7 @@
                     sizeType: ['compressed'],
                     sourceType: ['camera'],
                     success(res) {
-                        console.log(res)
+                        // console.log(res)
                         // tempFilePath可以作为img标签的src属性显示图片
                         _this.chooseimage = true
                         _this.tempFilePaths = res.tempFilePaths[0]
@@ -301,7 +321,7 @@
                             wx.getLocation({
                                 type: 'gcj02', // 返回可以用于wx.openLocation的经纬度
                                 success(res) {
-                                    console.log(res)
+                                    // console.log(res)
                                     const latitude = res.latitude
                                     const longitude = res.longitude
                                     wx.openLocation({
